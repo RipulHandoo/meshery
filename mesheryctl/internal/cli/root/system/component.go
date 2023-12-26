@@ -5,12 +5,12 @@ import (
 	"fmt"
 	"io"
 	"net/http"
-	"os"
-	"strings"
 
 	"github.com/layer5io/meshery/mesheryctl/internal/cli/root/config"
 	"github.com/layer5io/meshery/mesheryctl/pkg/utils"
+	"github.com/layer5io/meshery/server/models"
 	"github.com/pkg/errors"
+	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -85,8 +85,8 @@ mesheryctl exp components list --page 2
 			return err
 		}
 
-		modelsResponse := &models.MeshmodelsAPIResponse{}
-		err = json.Unmarshal(data, modelsResponse)
+		componentsResponse := &models.MeshmodelComponentsAPIResponse{}
+		err = json.Unmarshal(data, componentsResponse)
 		if err != nil {
 			utils.Log.Error(err)
 			return err
@@ -95,7 +95,7 @@ mesheryctl exp components list --page 2
 		header := []string{"Category", "Model", "Version"}
 		rows := [][]string{}
 
-		for _, model := range modelsResponse.Models {
+		for _, model := range componentsResponse.Components {
 			if len(model.DisplayName) > 0 {
 				rows = append(rows, []string{model.Category.Name, model.Name, model.Version})
 			}
