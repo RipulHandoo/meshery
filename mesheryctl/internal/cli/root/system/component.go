@@ -1,14 +1,18 @@
 package system
+
 import (
+	"encoding/json"
+	"fmt"
+	"io"
+	"net/http"
+	"os"
+	"strings"
+
+	"github.com/layer5io/meshery/mesheryctl/internal/cli/root/config"
+	"github.com/layer5io/meshery/mesheryctl/pkg/utils"
+	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-)
-
-var (
-	// flag used to specify the page number in list command
-	pageNumberFlag int
-	// flag used to specify format of output of view {component-name} command
-	outFormatFlag string
 )
 
 // represents the `mesheryctl exp components list` command
@@ -23,15 +27,92 @@ mesheryctl exp components list
 // View list of components with specified page number (25 components per page)
 mesheryctl exp components list --page 2
 	`,
+	PreRunE: func(cmd *cobra.Command, args []string) error {
+		// Check prerequisites for the command here
+
+		mctlCfg, err := config.GetMesheryCtl(viper.GetViper())
+		if err != nil {
+			return err
+		}
+		err = utils.IsServerRunning(mctlCfg.GetBaseMesheryURL())
+		if err != nil {
+			return err
+		}
+		ctx, err := mctlCfg.GetCurrentContext()
+		if err != nil {
+			return err
+		}
+		err = ctx.ValidateVersion()
+		if err != nil {
+			return err
+		}
+		return nil
+	},
 	RunE: func(cmd *cobra.Command, args []string) error {
-		// Implement the logic for listing components
-		// ...
+		if len(args) != 0 {
+			return errors.New(utils.SystemModelSubError("this command takes no arguments\n", "list"))
+		}
+		mctlCfg, err := config.GetMesheryCtl(viper.GetViper())
+		if err != nil {
+			log.Fatalln(err, "error processing config")
+		}
+
+		baseUrl := mctlCfg.GetBaseMesheryURL()
+		var url string
+		if cmd.Flags().Changed("page") {
+			url = fmt.Sprintf("%s/api/meshmodels/models?page=%d", baseUrl, pageNumberFlag)
+		} else {
+			url = fmt.Sprintf("%s/api/meshmodels/models?pagesize=all", baseUrl)
+		}
+		req, err := utils.NewRequest(http.MethodGet, url, nil)
+		if err != nil {
+			utils.Log.Error(err)
+			return err
+		}
+
+		resp, err := utils.MakeRequest(req)
+		if err != nil {
+			utils.Log.Error(err)
+			return err
+		}
+
+		// defers the closing of the response body after its use, ensuring that the resources are properly released.
+		defer resp.Body.Close()
+
+		data, err := io.ReadAll(resp.Body)
+		if err != nil {
+			utils.Log.Error(err)
+			return err
+		}
+
+		modelsResponse := &models.MeshmodelsAPIResponse{}
+		err = json.Unmarshal(data, modelsResponse)
+		if err != nil {
+			utils.Log.Error(err)
+			return err
+		}
+
+		header := []string{"Category", "Model", "Version"}
+		rows := [][]string{}
+
+		for _, model := range modelsResponse.Models {
+			if len(model.DisplayName) > 0 {
+				rows = append(rows, []string{model.Category.Name, model.Name, model.Version})
+			}
+		}
+
+		if len(rows) == 0 {
+			// if no model is found
+			utils.Log.Info("No model(s) found")
+		} else {
+			utils.PrintToTable(header, rows)
+		}
 
 		return nil
 	},
 }
 
-/ represents the `mesheryctl exp components view [component-name]` subcommand.
+// represents the `mesheryctl exp components view [component-name]` subcommand.
 var viewComponentCmd = &cobra.Command{
 	Use:   "view",
 	Short: "view component",
