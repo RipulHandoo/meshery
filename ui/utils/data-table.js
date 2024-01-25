@@ -100,7 +100,6 @@ const ResponsiveDataTable = ({
       }
     });
     updateCols([...columns]);
-    console.log(data);
   }, [width, columnVisibility]);
 
   const components = {
@@ -110,7 +109,7 @@ const ResponsiveDataTable = ({
   };
 
   return (
-    <div id="searchClick">
+    <div>
       <StyledMUIDataTable
         components={components}
         columns={tableCols}

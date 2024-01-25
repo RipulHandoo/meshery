@@ -87,6 +87,7 @@ export var darkTheme = createTheme({
       searchBorder: '#396679',
       tabs: '#202020',
       modalTabs: '#363636',
+      darkSlateGray: '#294957',
       tabHover: '#212121',
       confirmationModal: '#111111',
       focused: '#00b39f',
@@ -118,6 +119,7 @@ export var darkTheme = createTheme({
       disableButton: '#9d9d9d',
       listItemHover: 'rgb(0, 187, 166, 0.5)',
       white: '#202020',
+      whiteIcon: '#ffffff',
       btnDisabled: '#b0bec5',
     },
     tables: {
@@ -245,6 +247,7 @@ darkTheme = {
         color: '#F6F8F8',
         '&:hover': {
           color: '#00B39F',
+          backgroundColor: 'none',
         },
       },
       colorPrimary: {
@@ -370,6 +373,7 @@ let theme = createTheme({
       confirmationModal: 'rgb(234, 235, 236)',
       focused: '#607d8b',
       primaryModalText: '#FFF',
+      darkSlateGray: '#294957',
       default: '#51636B',
       success: '#00B39F',
       primary: '#477E96',
@@ -398,6 +402,7 @@ let theme = createTheme({
       disableButton: '#9d9d9d',
       listItemHover: '#f9f9f9',
       white: '#ffffff',
+      whiteIcon: '#ffffff',
       btnDisabled: '#b0bec5',
     },
     tables: {
@@ -477,6 +482,7 @@ theme = {
         padding: theme.spacing(1),
         '&:hover': {
           color: '#00B39F',
+          backgroundColor: 'none',
         },
         color: '#607d8b',
       },

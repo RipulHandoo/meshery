@@ -7,6 +7,7 @@ import (
 
 	"encoding/json"
 
+	"github.com/gofrs/uuid"
 	"github.com/gorilla/mux"
 	"github.com/pkg/errors"
 
@@ -32,6 +33,11 @@ func (h *Handler) UserHandler(w http.ResponseWriter, _ *http.Request, _ *models.
 
 func (h *Handler) GetUserByIDHandler(w http.ResponseWriter, r *http.Request, _ *models.Preference, _ *models.User, provider models.Provider) {
 	userID := mux.Vars(r)["id"]
+	_, err := uuid.FromString(userID)
+	if err != nil {
+		http.Error(w, ErrInvalidUUID(err).Error(), http.StatusBadRequest)
+		return
+	}
 	resp, err := provider.GetUserByID(r, userID)
 	if err != nil {
 		h.log.Error(ErrGetResult(err))
@@ -70,32 +76,6 @@ func (h *Handler) GetUsers(w http.ResponseWriter, req *http.Request, _ *models.P
 	q := req.URL.Query()
 
 	resp, err := provider.GetUsers(token, q.Get("page"), q.Get("pagesize"), q.Get("search"), q.Get("order"), q.Get("filter"))
-	if err != nil {
-		h.log.Error(ErrGetResult(err))
-		http.Error(w, ErrGetResult(err).Error(), http.StatusNotFound)
-		return
-	}
-
-	w.Header().Set("Content-Type", "application/json")
-	fmt.Fprint(w, string(resp))
-}
-
-// swagger:route GET /api/identity/users/keys UserKeysAPI idGetAllUsersKeysHandler
-// Handles GET for all Keys for users
-//
-// Returns all keys for user
-// responses:
-// 	200: keys
-
-func (h *Handler) GetUsersKeys(w http.ResponseWriter, req *http.Request, _ *models.Preference, _ *models.User, provider models.Provider) {
-	token, ok := req.Context().Value(models.TokenCtxKey).(string)
-	if !ok {
-		http.Error(w, "failed to get token", http.StatusInternalServerError)
-		return
-	}
-
-	q := req.URL.Query()
-	resp, err := provider.GetUsersKeys(token, q.Get("page"), q.Get("pagesize"), q.Get("search"), q.Get("order"), q.Get("filter"))
 	if err != nil {
 		h.log.Error(ErrGetResult(err))
 		http.Error(w, ErrGetResult(err).Error(), http.StatusNotFound)

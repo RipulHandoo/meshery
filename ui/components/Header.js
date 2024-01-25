@@ -423,7 +423,7 @@ function K8sContextMenu({
                             handlePing={() => ping(ctx.name, ctx.server, ctx.connection_id)}
                             iconSrc={
                               connectionMetadataState
-                                ? connectionMetadataState[CONNECTION_KINDS.KUBERNETES]?.icon
+                                ? `/${connectionMetadataState[CONNECTION_KINDS.KUBERNETES]?.icon}`
                                 : ''
                             } // chnage to use connection def
                             status={operatorState}
@@ -454,7 +454,6 @@ class Header extends React.PureComponent {
     };
   }
   componentDidMount() {
-    console.log('header component mounted');
     dataFetch(
       '/api/provider/capabilities',
       {
@@ -476,7 +475,6 @@ class Header extends React.PureComponent {
       },
       (err) => console.error(err),
     );
-    console.log('capabilitiesRegistry (mounted header)', this.props.capabilitiesRegistry);
     this._isMounted = true;
   }
   componentWillUnmount = () => {
