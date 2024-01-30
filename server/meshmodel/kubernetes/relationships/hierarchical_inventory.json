@@ -247,6 +247,174 @@
         "from": [],
         "to": []
       }
+    },
+    {
+      "allow": {
+        "from": [
+          {
+            "kind": "CSIDriver",
+            "model": "kubernetes",
+            "patch": {
+              "patchStrategy": "replace",
+              "mutatorRef": [
+                [
+                  "name"
+                ]
+              ],
+              "description": "CSI drivers are responsible for the actual operations of the storage system. They are responsible for mapping the operations to the storage system's API and for handling the response from the storage system."
+            }
+          }
+        ],
+        "to": [
+          {
+            "kind": "Pod",
+            "model": "kubernetes",
+            "patch": {
+              "patchStrategy": "replace",
+              "mutatedRef": [
+                [
+                  "settings",
+                  "spec",
+                  "volumes",
+                  "_",
+                  "csi",
+                  "driver",
+                  "name"
+                ]
+              ],
+              "description": "CSI drivers are responsible for the actual operations of the storage system. They are responsible for mapping the operations to the storage system's API and for handling the response from the storage system."
+            }
+          },
+          {
+            "kind": "Deployment",
+            "model": "kubernetes",
+            "patch": {
+              "patchStrategy": "replace",
+              "mutatedRef": [
+                [
+                  "settings",
+                  "spec",
+                  "template",
+                  "spec",
+                  "volumes",
+                  "_",
+                  "csi",
+                  "driver",
+                  "name"
+                ]
+              ],
+              "description": "CSI drivers are responsible for the actual operations of the storage system. They are responsible for mapping the operations to the storage system's API and for handling the response from the storage system."
+            }
+          },
+          {
+            "kind": "DaemonSet",
+            "model": "kubernetes",
+            "patch": {
+              "patchStrategy": "replace",
+              "mutatedRef": [
+                [
+                  "settings",
+                  "spec",
+                  "template",
+                  "spec",
+                  "volumes",
+                  "_",
+                  "csi",
+                  "driver",
+                  "name"
+                ]
+              ],
+              "description": "CSI drivers are responsible for the actual operations of the storage system. They are responsible for mapping the operations to the storage system's API and for handling the response from the storage system."
+            }
+          },
+          {
+            "kind": "StatefulSet",
+            "model": "kubernetes",
+            "patch": {
+              "patchStrategy": "replace",
+              "mutatedRef": [
+                [
+                  "settings",
+                  "spec",
+                  "template",
+                  "spec",
+                  "volumes",
+                  "_",
+                  "csi",
+                  "driver",
+                  "name"
+                ]
+              ],
+              "description": "CSI drivers are responsible for the actual operations of the storage system. They are responsible for mapping the operations to the storage system's API and for handling the response from the storage system."
+            }
+          },
+          {
+            "kind": "ReplicaSet",
+            "model": "kubernetes",
+            "patch": {
+              "patchStrategy": "replace",
+              "mutatedRef": [
+                [
+                  "settings",
+                  "spec",
+                  "template",
+                  "spec",
+                  "volumes",
+                  "_",
+                  "csi",
+                  "driver",
+                  "name"
+                ]
+              ],
+              "description": "CSI drivers are responsible for the actual operations of the storage system. They are responsible for mapping the operations to the storage system's API and for handling the response from the storage system."
+            }
+          },
+          {
+            "kind": "Job",
+            "model": "kubernetes",
+            "patch": {
+              "patchStrategy": "replace",
+              "mutatedRef": [
+                [
+                  "settings",
+                  "spec",
+                  "template",
+                  "spec",
+                  "volumes",
+                  "_",
+                  "csi",
+                  "driver",
+                  "name"
+                ]
+              ],
+              "description": "CSI drivers are responsible for the actual operations of the storage system. They are responsible for mapping the operations to the storage system's API and for handling the response from the storage system."
+            }
+          },
+          {
+            "kind": "CronJob",
+            "model": "kubernetes",
+            "patch": {
+              "patchStrategy": "replace",
+              "mutatedRef": [
+                [
+                  "settings",
+                  "spec",
+                  "jobTemplate",
+                  "spec",
+                  "template",
+                  "spec",
+                  "volumes",
+                  "_",
+                  "csi",
+                  "driver",
+                  "name"
+                ]
+              ],
+              "description": "CSI drivers are responsible for the actual operations of the storage system. They are responsible for mapping the operations to the storage system's API and for handling the response from the storage system."
+            }
+          }
+        ]
+      }
     }
   ]
 }
